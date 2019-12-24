@@ -1,0 +1,30 @@
+INCLUDE(FindPkgConfig)
+PKG_CHECK_MODULES(PC_SPECTROGRAM spectrogram)
+
+FIND_PATH(
+    SPECTROGRAM_INCLUDE_DIRS
+    NAMES spectrogram/api.h
+    HINTS $ENV{SPECTROGRAM_DIR}/include
+        ${PC_SPECTROGRAM_INCLUDEDIR}
+    PATHS ${CMAKE_INSTALL_PREFIX}/include
+          /usr/local/include
+          /usr/include
+)
+
+FIND_LIBRARY(
+    SPECTROGRAM_LIBRARIES
+    NAMES gnuradio-spectrogram
+    HINTS $ENV{SPECTROGRAM_DIR}/lib
+        ${PC_SPECTROGRAM_LIBDIR}
+    PATHS ${CMAKE_INSTALL_PREFIX}/lib
+          ${CMAKE_INSTALL_PREFIX}/lib64
+          /usr/local/lib
+          /usr/local/lib64
+          /usr/lib
+          /usr/lib64
+)
+
+INCLUDE(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(SPECTROGRAM DEFAULT_MSG SPECTROGRAM_LIBRARIES SPECTROGRAM_INCLUDE_DIRS)
+MARK_AS_ADVANCED(SPECTROGRAM_LIBRARIES SPECTROGRAM_INCLUDE_DIRS)
+
