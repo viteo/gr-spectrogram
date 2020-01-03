@@ -28,7 +28,7 @@
 #include <QtGui/QtGui>
 #include <vector>
 
-#include <spectrogram/displayform.h>
+#include <spectrogram/DisplayForm.h>
 
 /*!
  * \brief DisplayForm child for managing waterfall (spectrogram) plots.
