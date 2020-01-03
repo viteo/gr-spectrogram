@@ -42,7 +42,6 @@ list(APPEND GR_SWIG_FLAGS "-DENABLE_PYTHON")
 # Setup swig generation
 ########################################################################
 set(GR_SWIG_INCLUDE_DIRS
-    ${GR_QTGUI_INCLUDE_DIRS}
     ${GNURADIO_RUNTIME_SWIG_INCLUDE_DIRS}
     ${QWT_INCLUDE_DIRS}
     ${QT_INCLUDE_DIRS}

@@ -23,7 +23,7 @@
 
 #include <spectrogram/waterfall_vector_sink_f.h>
 #include <gnuradio/high_res_timer.h>
-#include <gnuradio/qtgui/waterfalldisplayform.h>
+#include <spectrogram/WaterfallVectorDisplayForm.h>
 
 namespace gr
 {
@@ -52,7 +52,7 @@ private:
   int d_argc;
   char *d_argv;
   QWidget *d_parent;
-  WaterfallDisplayForm *d_main_gui;
+  WaterfallVectorDisplayForm *d_main_gui;
 
   gr::high_res_timer_type d_update_time;
   gr::high_res_timer_type d_last_time;

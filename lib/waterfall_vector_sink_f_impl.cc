@@ -120,7 +120,7 @@ void waterfall_vector_sink_f_impl::initialize()
   check_set_qss(d_qApplication);
 
   int numplots = (d_nconnections > 0) ? d_nconnections : 1;
-  d_main_gui = new WaterfallDisplayForm(numplots, d_parent);
+  d_main_gui = new WaterfallVectorDisplayForm(numplots, d_parent);
   set_vec_size(d_vecsize);
   set_frequency_range(d_center_freq, d_bandwidth);
 
@@ -154,13 +154,13 @@ void waterfall_vector_sink_f_impl::clear_data()
   d_main_gui->clearData();
 }
 
-void waterfall_vector_sink_f_impl::set_vec_size(const int vecsize) { d_main_gui->setFFTSize(vecsize); }
+void waterfall_vector_sink_f_impl::set_vec_size(const int vecsize) { d_main_gui->setVecSize(vecsize); }
 
 int waterfall_vector_sink_f_impl::vec_size() const { return d_vecsize; }
 
 void waterfall_vector_sink_f_impl::set_vec_average(const float vecavg)
 {
-  d_main_gui->setFFTAverage(vecavg);
+  d_main_gui->setVecAverage(vecavg);
 }
 
 float waterfall_vector_sink_f_impl::vec_average() const { return d_vecavg; }
@@ -259,7 +259,7 @@ void waterfall_vector_sink_f_impl::check_clicked()
   }
 }
 
-void waterfall_vector_sink_f_impl::set_time_per_vec(double t) { d_main_gui->setTimePerFFT(t); }
+void waterfall_vector_sink_f_impl::set_time_per_vec(double t) { d_main_gui->setTimePerVec(t); }
 
 int waterfall_vector_sink_f_impl::work(int noutput_items,
                                        gr_vector_const_void_star &input_items,

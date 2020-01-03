@@ -23,5 +23,18 @@
 ########################################################################
 install(FILES
     api.h
-    waterfall_vector_sink_f.h DESTINATION include/spectrogram
+    #Useless to install these files because they dont have public symbols in their libaries
+    DisplayForm.h
+    DisplayPlot.h
+    form_menus.h
+    plot_waterfall.h
+    spectrogram_types.h
+    utils.h
+    WaterfallVectorDisplayForm.h
+    WaterfallVectorDisplayPlot.h
+    WaterfallVectorGlobalData.h
+    WaterfallVectorUpdateEvents.h
+    #end Useless
+    waterfall_vector_sink_f.h
+    DESTINATION include/spectrogram
 )

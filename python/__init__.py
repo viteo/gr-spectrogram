@@ -23,13 +23,5 @@ This is the GNU Radio SPECTROGRAM module. Place your Python package
 description here (python/__init__.py).
 '''
 
-import os
-
 # import swig generated symbols into the spectrogram namespace
-try:
-	# this might fail if the module is python-only
-	from spectrogram_swig import *
-except ImportError:
-    dirname, filename = os.path.split(os.path.abspath(__file__))
-    __path__.append(os.path.join(dirname, "..", "..", "swig"))
-    from spectrogram_swig import *
+from spectrogram_swig import *

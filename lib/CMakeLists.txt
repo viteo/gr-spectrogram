@@ -19,21 +19,11 @@
 # Boston, MA 02110-1301, USA.
 
 ########################################################################
-# QT GUI file generation stuff (Q_OBJECT)
-########################################################################
-#set(QTGUI_MOC_HEADERS
-#    ${GNURADIO_RUNTIME_INCLUDE_DIRS}/displayform.h
-#    ${GNURADIO_RUNTIME_INCLUDE_DIRS}/waterfalldisplayform.h
-#    ${GNURADIO_RUNTIME_INCLUDE_DIRS}/DisplayPlot.h
-#    ${GNURADIO_RUNTIME_INCLUDE_DIRS}/WaterfallDisplayPlot.h    
-#)
-#QT4_WRAP_CPP(QTGUI_MOC_OUTFILES ${QTGUI_MOC_HEADERS})
-
-########################################################################
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 include(GrMiscUtils)
+include(GrPython)
 
 include_directories(    
     ${VOLK_INCLUDE_DIRS}    
@@ -41,22 +31,49 @@ include_directories(
     ${Boost_INCLUDE_DIR}
     ${QT_INCLUDE_DIRS}
     ${QWT_INCLUDE_DIRS}
+    ${GNURADIO_ALL_INCLUDE_DIRS}
     )
 link_directories(
     ${QWT_LIBRARY_DIRS}
     ${Boost_LIBRARY_DIRS}
     ${GNURADIO_ALL_LIBRARIES}
+    ${GNURADIO_RUNTIME_LIBRARY_DIRS}
     )
 
+########################################################################
+# QT GUI file generation stuff (Q_OBJECT)
+########################################################################
+set(spectrogram_moc_includedir ${CMAKE_CURRENT_SOURCE_DIR}/../include/spectrogram)
+set(SPECTROGRAM_MOC_HEADERS
+    ${spectrogram_moc_includedir}/DisplayForm.h
+    ${spectrogram_moc_includedir}/WaterfallVectorDisplayForm.h
+    ${spectrogram_moc_includedir}/form_menus.h
+    ${spectrogram_moc_includedir}/DisplayPlot.h
+    ${spectrogram_moc_includedir}/WaterfallVectorDisplayPlot.h
+)
+QT4_WRAP_CPP(SPECTROGRAM_MOC_OUTFILES ${SPECTROGRAM_MOC_HEADERS} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
+# set(CMAKE_AUTOMOC ON)
+
+########################################################################
+# Build Library
+########################################################################
+
 list(APPEND spectrogram_sources
-#    ${QTGUI_MOC_OUTFILES}
+    ${SPECTROGRAM_MOC_OUTFILES}
+    DisplayForm.cc
+    DisplayPlot.cc
+    WaterfallVectorDisplayPlot.cc
+    WaterfallVectorGlobalData.cc
+    WaterfallVectorDisplayForm.cc
+    WaterfallVectorUpdateEvents.cc
+    plot_waterfall.cc
     waterfall_vector_sink_f_impl.cc
 )
 
 include(GrPython)
 if(ENABLE_PYTHON)
 	add_definitions(-DENABLE_PYTHON)
-	list(APPEND qtgui_libs
+	list(APPEND spectrogram_libs
 			${PYTHON_LIBRARIES}
 			)
 endif(ENABLE_PYTHON)
@@ -72,11 +89,12 @@ add_definitions(-DQWT_DLL) #setup QWT library linkage
 add_library(gnuradio-spectrogram 
             SHARED ${spectrogram_sources})
 target_link_libraries(gnuradio-spectrogram 
-                    ${Boost_LIBRARIES} 
+                    # ${Boost_LIBRARIES} 
                     ${QWT_LIBRARIES} 
-                    ${PYTHON_LIBRARIES} 
+                    # ${PYTHON_LIBRARIES} 
                     ${QT_LIBRARIES} 
-                    ${GNURADIO_ALL_LIBRARIES})
+                    ${GNURADIO_ALL_LIBRARIES}
+                    ${spectrogram_libs})
 set_target_properties(gnuradio-spectrogram PROPERTIES DEFINE_SYMBOL "gnuradio_spectrogram_EXPORTS")
 
 if(APPLE)

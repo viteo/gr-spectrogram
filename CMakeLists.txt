@@ -22,6 +22,12 @@
 # Project setup
 ########################################################################
 cmake_minimum_required(VERSION 2.6)
+set(GR_BOOST_MIN_VERSION "1.48")
+set(GR_SWIG_MIN_VERSION "2.0.4")
+set(GR_CMAKE_MIN_VERSION "2.8.12")
+set(GR_PYTHON_MIN_VERSION "2.7")
+set(GCC_MIN_VERSION "4.4.0")
+
 project(gr-spectrogram CXX C)
 
 #install to PyBOMBS target prefix if defined
@@ -44,7 +50,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 set(VERSION_INFO_MAJOR_VERSION 1)
 set(VERSION_INFO_API_COMPAT    0)
 set(VERSION_INFO_MINOR_VERSION 0)
-set(VERSION_INFO_MAINT_VERSION git)
+set(VERSION_INFO_MAINT_VERSION grspgrm)
 
 # Set cmake policies.
 # This will suppress developer warnings during the cmake process that can occur
@@ -74,19 +80,7 @@ endif()
 ########################################################################
 # Find boost
 ########################################################################
-if(UNIX AND EXISTS "/usr/lib64")
-    list(APPEND BOOST_LIBRARYDIR "/usr/lib64") #fedora 64-bit fix
-endif(UNIX AND EXISTS "/usr/lib64")
-set(Boost_ADDITIONAL_VERSIONS
-    "1.35.0" "1.35" "1.36.0" "1.36" "1.37.0" "1.37" "1.38.0" "1.38" "1.39.0" "1.39"
-    "1.40.0" "1.40" "1.41.0" "1.41" "1.42.0" "1.42" "1.43.0" "1.43" "1.44.0" "1.44"
-    "1.45.0" "1.45" "1.46.0" "1.46" "1.47.0" "1.47" "1.48.0" "1.48" "1.49.0" "1.49"
-    "1.50.0" "1.50" "1.51.0" "1.51" "1.52.0" "1.52" "1.53.0" "1.53" "1.54.0" "1.54"
-    "1.55.0" "1.55" "1.56.0" "1.56" "1.57.0" "1.57" "1.58.0" "1.58" "1.59.0" "1.59"
-    "1.60.0" "1.60" "1.61.0" "1.61" "1.62.0" "1.62" "1.63.0" "1.63" "1.64.0" "1.64"
-    "1.65.0" "1.65" "1.66.0" "1.66" "1.67.0" "1.67" "1.68.0" "1.68" "1.69.0" "1.69"
-)
-find_package(Boost "1.35" COMPONENTS filesystem system)
+include(GrBoost)
 
 find_package(PythonLibs 2)
 include(GrPython)
@@ -95,6 +89,30 @@ GR_PYTHON_CHECK_MODULE("PyQt4" PyQt4 True PYQT4_FOUND)
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Boost required to compile spectrogram")
 endif()
+
+########################################################################
+# Register component
+########################################################################
+include(GrComponent)
+if(NOT CMAKE_CROSSCOMPILING)
+    set(qt_gui_python_deps
+        PYQT4_FOUND
+    )
+endif(NOT CMAKE_CROSSCOMPILING)
+
+include(GrMiscUtils)
+GR_SET_GLOBAL(GR_SPECTROGRAM_INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib
+    ${CMAKE_CURRENT_BINARY_DIR}/lib
+)
+
+########################################################################
+# Environment setup
+########################################################################
+IF(NOT DEFINED BOOST_ROOT)
+    SET(BOOST_ROOT "${CMAKE_INSTALL_PREFIX}")
+ENDIF()
 
 ########################################################################
 # Install directories
@@ -134,15 +152,16 @@ endif(APPLE)
 ########################################################################
 # Find gnuradio build dependencies
 ########################################################################
-find_package(CppUnit)
 find_package(Qt4 4.2.0 COMPONENTS QtCore QtGui REQUIRED)
 find_package(Qwt 6.1.0 REQUIRED)
+find_package(SWIG)
+find_package(CppUnit ${GR_CPPUNIT_MIN_VERSION})
 
 # Search for GNU Radio and its components and versions. Add any
 # components required to the list of GR_REQUIRED_COMPONENTS (in all
 # caps such as FILTER or FFT) and change the version to the minimum
 # API compatible version required.
-set(GR_REQUIRED_COMPONENTS RUNTIME QTGUI FILTER FFT)
+set(GR_REQUIRED_COMPONENTS RUNTIME)
 find_package(Gnuradio "3.7.2" REQUIRED)
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 include(GrVersion)
@@ -174,7 +193,6 @@ link_directories(
     ${Boost_LIBRARY_DIRS}
     ${CPPUNIT_LIBRARY_DIRS}
     ${GNURADIO_RUNTIME_LIBRARY_DIRS}
-    ${GNURADIO_FILTER_LIBRARY_DIRS}
     ${QT_LIBRARY_DIRS}
     ${QWT_LIBRARY_DIRS}
 )
