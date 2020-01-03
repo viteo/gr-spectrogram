@@ -21,6 +21,7 @@
 #ifndef FORM_MENUS_H
 #define FORM_MENUS_H
 
+#include <spectrogram/api.h>
 #include <spectrogram/spectrogram_types.h>
 #include <QtGui/QDoubleValidator>
 #include <QtGui/QIntValidator>

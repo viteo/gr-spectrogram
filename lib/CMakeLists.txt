@@ -51,7 +51,14 @@ set(SPECTROGRAM_MOC_HEADERS
     ${spectrogram_moc_includedir}/DisplayPlot.h
     ${spectrogram_moc_includedir}/WaterfallVectorDisplayPlot.h
 )
-QT4_WRAP_CPP(SPECTROGRAM_MOC_OUTFILES ${SPECTROGRAM_MOC_HEADERS} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
+QT4_WRAP_CPP(SPECTROGRAM_MOC_OUTFILES ${SPECTROGRAM_MOC_HEADERS} 
+            OPTIONS 
+            -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED 
+            -DBOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION 
+            -DBOOST_LEXICAL_CAST_INCLUDED 
+            -DBOOST_NEXT_PRIOR_HPP_INCLUDED 
+            -DBOOST_TYPE_TRAITS_HPP 
+            -D_SYS_SYSMACROS_H_OUTER)
 # set(CMAKE_AUTOMOC ON)
 
 ########################################################################
@@ -67,6 +74,7 @@ list(APPEND spectrogram_sources
     WaterfallVectorDisplayForm.cc
     WaterfallVectorUpdateEvents.cc
     plot_waterfall.cc
+    spectrogram_util.cc
     waterfall_vector_sink_f_impl.cc
 )
 

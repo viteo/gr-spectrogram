@@ -21,6 +21,7 @@
 #ifndef DOMAIN_DISPLAY_PLOT_H
 #define DOMAIN_DISPLAY_PLOT_H
 
+#include <spectrogram/api.h>
 #include <spectrogram/utils.h>
 #include <qwt_legend.h>
 #include <qwt_painter.h>

@@ -64,6 +64,6 @@ public:
     transition(const QwtEventPattern& eventPattern, const QEvent* e);
 };
 
-void check_set_qss(QApplication* app);
+void SPECTROGRAM_API check_set_qss(QApplication* app);
 
 #endif /* INCLUDED_SPECTROGRAM_UTILS_H */

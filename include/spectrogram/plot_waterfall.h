@@ -33,7 +33,7 @@
 // clang-format on
 #endif
 
-class SPECTROGRAM_API QwtColorMap;
+class QwtColorMap;
 
 /*!
  * \brief A plot item, which displays a waterfall spectrogram
