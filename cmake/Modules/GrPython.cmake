@@ -87,7 +87,7 @@ macro(GR_PYTHON_CHECK_MODULE desc mod cmd have)
 try:
     import ${mod}
     assert ${cmd}
-except ImportError, AssertionError: exit(-1)
+except (ImportError, AssertionError): exit(-1)
 except: pass
 #########################################"
         RESULT_VARIABLE ${have}
@@ -106,8 +106,8 @@ endmacro(GR_PYTHON_CHECK_MODULE)
 ########################################################################
 if(NOT DEFINED GR_PYTHON_DIR)
 execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "
-from distutils import sysconfig
-print sysconfig.get_python_lib(plat_specific=True, prefix='')
+from distutils.sysconfig import get_python_lib
+print (get_python_lib(plat_specific=True, prefix=''))
 " OUTPUT_VARIABLE GR_PYTHON_DIR OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 endif()

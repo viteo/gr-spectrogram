@@ -255,14 +255,13 @@ void WaterfallVectorDisplayPlot::plotNewData(const std::vector<double *> dataPoi
                                        const gr::high_res_timer_type timestamp,
                                        const int droppedFrames)
 {
-    int64_t _npoints_in = numDataPoints;
     int64_t _in_index = 0;
 
     if (!d_stop)
     {
-        if (_npoints_in > 0 && timestamp == 0)
+        if (numDataPoints > 0 && timestamp == 0)
         {
-            d_numPoints = _npoints_in / d_nrows;
+            d_numPoints = numDataPoints / d_nrows;
             resetAxis();
 
             for (int i = 0; i < d_nplots; i++)
@@ -284,11 +283,11 @@ void WaterfallVectorDisplayPlot::plotNewData(const std::vector<double *> dataPoi
             replot();
         }
 
-        else if (_npoints_in > 0)
+        else if (numDataPoints > 0)
         {
-            if (_npoints_in != d_numPoints)
+            if (numDataPoints != d_numPoints)
             {
-                d_numPoints = _npoints_in;
+                d_numPoints = numDataPoints;
                 resetAxis();
 
                 for (int i = 0; i < d_nplots; i++)
@@ -314,7 +313,7 @@ void WaterfallVectorDisplayPlot::plotNewData(const std::vector<double *> dataPoi
             for (int i = 0; i < d_nplots; i++)
             {
                 d_data[i]->addVecData(
-                    &(dataPoints[i][_in_index]), _npoints_in, droppedFrames);
+                    &(dataPoints[i][_in_index]), numDataPoints, droppedFrames);
                 d_data[i]->incrementNumLinesToUpdate();
                 d_spectrogram[i]->invalidateCache();
                 d_spectrogram[i]->itemChanged();

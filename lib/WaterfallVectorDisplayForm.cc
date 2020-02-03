@@ -24,7 +24,7 @@
 #include <cmath>
 #include <iostream>
 
-WaterfallVectorDisplayForm::WaterfallVectorDisplayForm(int nplots, QWidget* parent)
+WaterfallVectorDisplayForm::WaterfallVectorDisplayForm(int nplots, QWidget *parent)
     : DisplayForm(nplots, parent)
 {
     d_int_validator = new QIntValidator(this);
@@ -49,18 +49,20 @@ WaterfallVectorDisplayForm::WaterfallVectorDisplayForm(int nplots, QWidget* pare
     d_time_per_vec = 0;
     // We don't use the normal menus that are part of the displayform.
     // Clear them out to get rid of their resources.
-    for (int i = 0; i < nplots; i++) {
+    for (int i = 0; i < nplots; i++)
+    {
         d_lines_menu[i]->clear();
     }
     d_marker_alpha_menu.clear();
 
     // Now create our own menus
-    for (int i = 0; i < nplots; i++) {
-        ColorMapMenu* colormap = new ColorMapMenu(i, this);
+    for (int i = 0; i < nplots; i++)
+    {
+        ColorMapMenu *colormap = new ColorMapMenu(i, this);
         connect(colormap,
-                SIGNAL(whichTrigger(int, const int, const QColor&, const QColor&)),
+                SIGNAL(whichTrigger(int, const int, const QColor &, const QColor &)),
                 this,
-                SLOT(setColorMap(int, const int, const QColor&, const QColor&)));
+                SLOT(setColorMap(int, const int, const QColor &, const QColor &)));
         d_lines_menu[i]->addMenu(colormap);
 
         d_marker_alpha_menu.push_back(new MarkerAlphaMenu(i, this));
@@ -76,19 +78,20 @@ WaterfallVectorDisplayForm::WaterfallVectorDisplayForm(int nplots, QWidget* pare
     d_autoscale_act->setCheckable(false);
 
     d_sizemenu = new VecSizeMenu(this);
-    d_avgmenu = new AverageMenu("Vec Average", this);
-    d_menu->addMenu(d_sizemenu);
-    d_menu->addMenu(d_avgmenu);
+    //d_menu->addMenu(d_sizemenu);
     connect(d_sizemenu, SIGNAL(whichTrigger(int)), this, SLOT(setVecSize(const int)));
+    
+    d_avgmenu = new AverageMenu("Vec Average", this);
+    d_menu->addMenu(d_avgmenu);
     connect(
         d_avgmenu, SIGNAL(whichTrigger(float)), this, SLOT(setVecAverage(const float)));
 
-    PopupMenu* maxintmenu = new PopupMenu("Int. Max", this);
+    PopupMenu *maxintmenu = new PopupMenu("Int. Max", this);
     d_menu->addAction(maxintmenu);
     connect(
         maxintmenu, SIGNAL(whichTrigger(QString)), this, SLOT(setMaxIntensity(QString)));
 
-    PopupMenu* minintmenu = new PopupMenu("Int. Min", this);
+    PopupMenu *minintmenu = new PopupMenu("Int. Min", this);
     d_menu->addAction(minintmenu);
     connect(
         minintmenu, SIGNAL(whichTrigger(QString)), this, SLOT(setMinIntensity(QString)));
@@ -110,22 +113,23 @@ WaterfallVectorDisplayForm::~WaterfallVectorDisplayForm()
     delete d_int_validator;
 }
 
-WaterfallVectorDisplayPlot* WaterfallVectorDisplayForm::getPlot()
+WaterfallVectorDisplayPlot *WaterfallVectorDisplayForm::getPlot()
 {
-    return ((WaterfallVectorDisplayPlot*)d_display_plot);
+    return ((WaterfallVectorDisplayPlot *)d_display_plot);
 }
 
-void WaterfallVectorDisplayForm::newData(const QEvent* updateEvent)
+void WaterfallVectorDisplayForm::newData(const QEvent *updateEvent)
 {
-    WaterfallUpdateEvent* event = (WaterfallUpdateEvent*)updateEvent;
-    const std::vector<double*> dataPoints = event->getPoints();
+    WaterfallUpdateEvent *event = (WaterfallUpdateEvent *)updateEvent;
+    const std::vector<double *> dataPoints = event->getPoints();
     const uint64_t numDataPoints = event->getNumDataPoints();
     const gr::high_res_timer_type dataTimestamp = event->getDataTimestamp();
 
-    for (size_t i = 0; i < dataPoints.size(); i++) {
-        double* min_val =
+    for (size_t i = 0; i < dataPoints.size(); i++)
+    {
+        double *min_val =
             std::min_element(&dataPoints[i][0], &dataPoints[i][numDataPoints - 1]);
-        double* max_val =
+        double *max_val =
             std::max_element(&dataPoints[i][0], &dataPoints[i][numDataPoints - 1]);
         if (*min_val < d_min_val)
             d_min_val = *min_val;
@@ -136,12 +140,15 @@ void WaterfallVectorDisplayForm::newData(const QEvent* updateEvent)
     getPlot()->plotNewData(dataPoints, numDataPoints, d_time_per_vec, dataTimestamp, 0);
 }
 
-void WaterfallVectorDisplayForm::customEvent(QEvent* e)
+void WaterfallVectorDisplayForm::customEvent(QEvent *e)
 {
-    if (e->type() == WaterfallUpdateEvent::Type()) {
+    if (e->type() == WaterfallUpdateEvent::Type())
+    {
         newData(e);
-    } else if (e->type() == SpectrumFrequencyRangeEventType) {
-        SetFreqEvent* fevent = (SetFreqEvent*)e;
+    }
+    else if (e->type() == SpectrumFrequencyRangeEventType)
+    {
+        SetFreqEvent *fevent = (SetFreqEvent *)e;
         setFrequencyRange(fevent->getCenterFrequency(), fevent->getBandwidth());
     }
 }
@@ -167,7 +174,7 @@ double WaterfallVectorDisplayForm::getMaxIntensity(int which)
     return getPlot()->getMaxIntensity(which);
 }
 
-void WaterfallVectorDisplayForm::setSampleRate(const QString& samprate)
+void WaterfallVectorDisplayForm::setSampleRate(const QString &samprate)
 {
     setFrequencyRange(d_center_freq, samprate.toDouble());
 }
@@ -187,9 +194,9 @@ void WaterfallVectorDisplayForm::setVecAverage(const float newavg)
 }
 
 void WaterfallVectorDisplayForm::setFrequencyRange(const double centerfreq,
-                                             const double bandwidth)
+                                                   const double bandwidth)
 {
-    std::string strunits[4] = { "Hz", "kHz", "MHz", "GHz" };
+    std::string strunits[4] = {"Hz", "kHz", "MHz", "GHz"};
     double units10 = floor(log10(bandwidth));
     double units3 = std::max(floor(units10 / 3.0), 0.0);
     d_units = pow(10, (units10 - fmod(units10, 3.0)));
@@ -203,9 +210,9 @@ void WaterfallVectorDisplayForm::setFrequencyRange(const double centerfreq,
 }
 
 void WaterfallVectorDisplayForm::setColorMap(int which,
-                                       const int newType,
-                                       const QColor lowColor,
-                                       const QColor highColor)
+                                             const int newType,
+                                             const QColor lowColor,
+                                             const QColor highColor)
 {
     getPlot()->setIntensityColorMapType(which, newType, lowColor, highColor);
     getPlot()->replot();
@@ -218,7 +225,7 @@ void WaterfallVectorDisplayForm::setAlpha(int which, int alpha)
 }
 
 void WaterfallVectorDisplayForm::setIntensityRange(const double minIntensity,
-                                             const double maxIntensity)
+                                                   const double maxIntensity)
 {
     // reset max and min values
     d_min_val = 1000;
@@ -230,14 +237,14 @@ void WaterfallVectorDisplayForm::setIntensityRange(const double minIntensity,
     getPlot()->replot();
 }
 
-void WaterfallVectorDisplayForm::setMaxIntensity(const QString& m)
+void WaterfallVectorDisplayForm::setMaxIntensity(const QString &m)
 {
     double new_max = m.toDouble();
     if (new_max > d_cur_min_val)
         setIntensityRange(d_cur_min_val, new_max);
 }
 
-void WaterfallVectorDisplayForm::setMinIntensity(const QString& m)
+void WaterfallVectorDisplayForm::setMinIntensity(const QString &m)
 {
     double new_min = m.toDouble();
     if (new_min < d_cur_max_val)
@@ -262,10 +269,13 @@ void WaterfallVectorDisplayForm::onPlotPointSelected(const QPointF p)
 
 bool WaterfallVectorDisplayForm::checkClicked()
 {
-    if (d_clicked) {
+    if (d_clicked)
+    {
         d_clicked = false;
         return true;
-    } else {
+    }
+    else
+    {
         return false;
     }
 }

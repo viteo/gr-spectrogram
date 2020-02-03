@@ -129,7 +129,7 @@ DisplayForm::DisplayForm(int nplots, QWidget* parent)
             SIGNAL(whichTrigger(QString)),
             this,
             SLOT(setSampleRate(QString)));
-    d_menu->addAction(d_samp_rate_act);
+    //d_menu->addAction(d_samp_rate_act);
 
     d_autoscale_act = new QAction("Auto Scale", this);
     d_autoscale_act->setStatusTip(tr("Autoscale Plot"));
