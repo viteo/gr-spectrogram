@@ -56,7 +56,7 @@ public:
     virtual QwtText label(double value) const
     {
         double secs = double(value * getSecondsPerLine());
-        return QwtText(QString("").sprintf("%.2e", secs));
+        return QwtText(QString("").sprintf("%u", (uint)(secs*10)));
     }
 
     virtual void initiateUpdate()
@@ -132,7 +132,7 @@ WaterfallVectorDisplayPlot::WaterfallVectorDisplayPlot(int nplots, QWidget *pare
     setAxisTitle(QwtPlot::xBottom, "Frequency (Hz)");
     setAxisScaleDraw(QwtPlot::xBottom, new FreqDisplayScaleDraw(0));
 
-    setAxisTitle(QwtPlot::yLeft, "Time (s)");
+    setAxisTitle(QwtPlot::yLeft, "Ticks");
     setAxisScaleDraw(QwtPlot::yLeft, new QwtTimeScaleDraw());
 
     for (int i = 0; i < d_nplots; i++)
